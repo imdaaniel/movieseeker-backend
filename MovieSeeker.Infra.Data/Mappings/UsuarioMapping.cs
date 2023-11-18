@@ -13,11 +13,15 @@ namespace MovieSeeker.Infra.Data.Mappings
             
             builder.Property(e => e.Nome)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
+
+            builder.Property(e => e.Sobrenome)
+                .IsRequired()
+                .HasMaxLength(50);
 
             builder.Property(e => e.Email)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(62);
 
             builder.Property(e => e.Senha)
                 .IsRequired()
