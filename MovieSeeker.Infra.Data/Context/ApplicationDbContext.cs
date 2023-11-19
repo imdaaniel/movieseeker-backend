@@ -1,12 +1,14 @@
-using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+
+using MovieSeeker.Domain.Entities;
 
 namespace MovieSeeker.Infra.Data.Context
 {
     public class ApplicationDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
+
         // public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         // { }
 

@@ -5,17 +5,17 @@ using MovieSeeker.Domain.Entities;
 
 namespace MovieSeeker.Infra.Data.Mappings
 {
-    public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
+    public class UserMapping : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<Usuario> builder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(e => e.Id);
             
-            builder.Property(e => e.Nome)
+            builder.Property(e => e.FirstName)
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(e => e.Sobrenome)
+            builder.Property(e => e.LastName)
                 .IsRequired()
                 .HasMaxLength(50);
 
@@ -23,7 +23,7 @@ namespace MovieSeeker.Infra.Data.Mappings
                 .IsRequired()
                 .HasMaxLength(62);
 
-            builder.Property(e => e.Senha)
+            builder.Property(e => e.Password)
                 .IsRequired()
                 .HasMaxLength(255);
         }
