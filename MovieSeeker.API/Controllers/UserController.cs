@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
 using MovieSeeker.API.Models.User;
-using MovieSeeker.Application.Dtos.User;
-using MovieSeeker.Application.Services.User;
+using MovieSeeker.Application.Dtos;
+using MovieSeeker.Application.Services;
 
 namespace MovieSeeker.API.Controllers
 {
@@ -28,14 +28,14 @@ namespace MovieSeeker.API.Controllers
                 Password = model.Password
             };
 
-            var result = await _userService.RegisterUserAsync(userSignUpRequestDto);
+            var result = await _userService.CreateUserAsync(userSignUpRequestDto);
 
             if (result == null)
             {
                 return BadRequest("Ocorreu um erro ao cadastrar o usuário");
             }
 
-            return CreatedAtAction(nameof(SignUp), result);
+            return CreatedAtAction(nameof(SignUp), null);
         }
     }
 }

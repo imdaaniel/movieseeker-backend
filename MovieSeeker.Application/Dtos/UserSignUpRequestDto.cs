@@ -1,4 +1,4 @@
-namespace MovieSeeker.Application.Dtos.User
+namespace MovieSeeker.Application.Dtos
 {
     public class UserSignUpRequestDto
     {
