@@ -17,6 +17,10 @@ namespace MovieSeeker.Application.Services
 
         public async Task<User> CreateUserAsync(UserSignUpRequestDto signUpRequestDto)
         {
+            if (await _userRepository.EmailExistsAsync(signUpRequestDto.Email)) {
+                throw new InvalidOperationException("Email já cadastrado");
+            }
+
             string hashedPasword = BCryptNet.HashPassword(signUpRequestDto.Password);
 
             User user = new()

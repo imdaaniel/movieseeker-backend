@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 using MovieSeeker.Domain.Entities;
 using MovieSeeker.Infra.Data.Context;
 
@@ -18,6 +20,11 @@ namespace MovieSeeker.Application.Repositories
             await _dbContext.SaveChangesAsync();
 
             return user;
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _dbContext.Users.AnyAsync(u => u.Email == email);
         }
     }
 }

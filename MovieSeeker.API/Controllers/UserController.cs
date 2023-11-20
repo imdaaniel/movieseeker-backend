@@ -20,22 +20,28 @@ namespace MovieSeeker.API.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp([FromBody] UserSignUpRequestModel model)
         {
-            UserSignUpRequestDto userSignUpRequestDto = new()
+            try
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                Password = model.Password
-            };
+                UserSignUpRequestDto userSignUpRequestDto = new()
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Password = model.Password
+                };
 
-            var result = await _userService.CreateUserAsync(userSignUpRequestDto);
+                var result = await _userService.CreateUserAsync(userSignUpRequestDto);
 
-            if (result == null)
-            {
-                return BadRequest("Ocorreu um erro ao cadastrar o usuário");
+                return CreatedAtAction(nameof(SignUp), null);
             }
-
-            return CreatedAtAction(nameof(SignUp), null);
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Erro interno do servidor"});
+            }
         }
     }
 }
