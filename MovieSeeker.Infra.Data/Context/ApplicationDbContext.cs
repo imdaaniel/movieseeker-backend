@@ -9,20 +9,8 @@ namespace MovieSeeker.Infra.Data.Context
     {
         public DbSet<User> Users { get; set; }
 
-        // public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        // { }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "MovieSeeker.API"))
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

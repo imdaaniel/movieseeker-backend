@@ -12,9 +12,8 @@ namespace MovieSeeker.Application.Repositories
             _dbContext = context;
         }
 
-        public async Task<User> AddAsync(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
-            
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
