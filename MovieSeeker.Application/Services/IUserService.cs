@@ -6,6 +6,6 @@ namespace MovieSeeker.Application.Services
     public interface IUserService
     {
         Task<User> CreateUserAsync(UserSignUpRequestDto request);
-        // Task<UserSignInRequestDto> AuthenticateUserAsync(UserSignInRequestDto request);
+        Task<string> AuthenticateUserAsync(UserSignInRequestDto request);
     }
 }
