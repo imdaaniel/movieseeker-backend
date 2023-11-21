@@ -26,5 +26,10 @@ namespace MovieSeeker.Application.Repositories
         {
             return await _dbContext.Users.AnyAsync(u => u.Email == email);
         }
+
+        public async Task<User> AuthenticateUserAsync(string email, string password)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+        }
     }
 }
