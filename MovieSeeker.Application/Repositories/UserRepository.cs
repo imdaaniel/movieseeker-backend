@@ -40,5 +40,11 @@ namespace MovieSeeker.Application.Repositories
 
             return user;
         }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
