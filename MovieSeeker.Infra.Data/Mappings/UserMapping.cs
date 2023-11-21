@@ -26,6 +26,10 @@ namespace MovieSeeker.Infra.Data.Mappings
             builder.Property(e => e.Password)
                 .IsRequired()
                 .HasMaxLength(255);
+
+            builder.Property(e => e.Active)
+                .IsRequired()
+                .HasDefaultValue(false);
         }
     }
 }
