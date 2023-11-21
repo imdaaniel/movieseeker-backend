@@ -31,6 +31,10 @@ namespace MovieSeeker.API.Middleware
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
 
+                    case UnauthorizedAccessException unauthorizedAccessException:
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        break;
+
                     default:
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
