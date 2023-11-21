@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
+using MovieSeeker.API.Middleware;
 using MovieSeeker.Application.Repositories;
 using MovieSeeker.Application.Services;
 using MovieSeeker.Infra.Data.Context;
@@ -20,6 +21,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
