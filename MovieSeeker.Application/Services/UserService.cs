@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 using MovieSeeker.Application.Dtos;
 using MovieSeeker.Application.Repositories;
 using MovieSeeker.Domain.Entities;
@@ -41,6 +43,26 @@ namespace MovieSeeker.Application.Services
             var user = await _userRepository.AuthenticateUserAsync(signInRequestDto.Email, signInRequestDto.Password);
 
             return _tokenService.GenerateToken(user);
+        }
+
+        public async Task<bool> EditUserNameAsync(Guid userId, UserEditNameRequestDto userEditNameRequestDto)
+        {
+            User? user = await _userRepository.GetUserByIdAsync(userId);
+
+            if (user == null) {
+                throw new InvalidOperationException("Usuario não encontrado");
+            }
+
+            user.FirstName = userEditNameRequestDto.FirstName;
+            user.LastName = userEditNameRequestDto.LastName;
+
+            int affectedRows = await _userRepository.UpdateUserAsync(user);
+
+            if (affectedRows < 1) {
+                throw new DbUpdateException("Não foi possível editar o nome do usuário");
+            }
+
+            return true;
         }
     }
 }

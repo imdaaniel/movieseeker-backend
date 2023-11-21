@@ -7,5 +7,6 @@ namespace MovieSeeker.Application.Services
     {
         Task<User> CreateUserAsync(UserSignUpRequestDto request);
         Task<string> AuthenticateUserAsync(UserSignInRequestDto request);
+        Task<bool> EditUserNameAsync(Guid userId, UserEditNameRequestDto userEditNameRequestDto);
     }
 }

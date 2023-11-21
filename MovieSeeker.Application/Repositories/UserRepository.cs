@@ -41,10 +41,15 @@ namespace MovieSeeker.Application.Repositories
             return user;
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task<int> UpdateUserAsync(User user)
         {
             _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserByIdAsync(Guid userId)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
     }
 }
