@@ -32,5 +32,19 @@ namespace MovieSeeker.API.Controllers
 
             return CreatedAtAction(nameof(SignUp), null);
         }
+
+        [HttpPost("signin")]
+        public async Task<IActionResult> SignIn([FromBody] UserSignInRequestModel model)
+        {
+            UserSignInRequestDto userSignInRequestDto = new()
+            {
+                Email = model.Email,
+                Password = model.Password
+            };
+
+            var result = await _userService.AuthenticateUserAsync(userSignInRequestDto);
+
+            return Ok(new { token = result });
+        }
     }
 }
