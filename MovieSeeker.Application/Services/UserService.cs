@@ -47,7 +47,7 @@ namespace MovieSeeker.Application.Services
 
         public async Task<bool> EditUserNameAsync(Guid userId, UserEditNameRequestDto userEditNameRequestDto)
         {
-            User? user = await _userRepository.GetUserByIdAsync(userId);
+            User? user = await GetUserByIdAsync(userId);
 
             if (user == null) {
                 throw new InvalidOperationException("Usuario não encontrado");
@@ -63,6 +63,11 @@ namespace MovieSeeker.Application.Services
             }
 
             return true;
+        }
+
+        public async Task<User> GetUserByIdAsync(Guid userId)
+        {
+            return await _userRepository.GetUserByIdAsync(userId);
         }
     }
 }
