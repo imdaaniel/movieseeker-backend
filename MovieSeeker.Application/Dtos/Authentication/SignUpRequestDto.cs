@@ -1,6 +1,6 @@
-namespace MovieSeeker.Application.Dtos
+namespace MovieSeeker.Application.Dtos.Authentication
 {
-    public class UserSignUpRequestDto
+    public class SignUpRequestDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

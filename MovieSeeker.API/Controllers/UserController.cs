@@ -5,22 +5,23 @@ using MovieSeeker.Application.Services;
 
 namespace MovieSeeker.API.Controllers
 {
-    [ApiController]
-    [Route("user")]
-    [Authorize]
-    public class UserController : ControllerBase
+    [Route("[controller]")]
+    public class UserController : MovieSeekerController
     {
-        private readonly IUserService _userService;
+        private IUserService _userService;
 
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
 
-        [HttpGet("profile")]
-        public async Task<IActionResult> GetUserProfile()
+        [HttpGet()]
+        public async Task<IActionResult> GetUser()
         {
-            return Ok(new { teste = 1 });
+            string id = HttpContext.Items["UserId"] as string;
+            var response = await _userService.GetUserByIdAsync(Guid.Parse(id));
+
+            return Response(response);
         }
     }
 }

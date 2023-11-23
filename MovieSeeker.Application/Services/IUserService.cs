@@ -1,4 +1,3 @@
-using MovieSeeker.Application.Dtos;
 using MovieSeeker.Domain.Entities;
 
 namespace MovieSeeker.Application.Services

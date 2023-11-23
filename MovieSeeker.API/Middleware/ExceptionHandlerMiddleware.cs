@@ -1,5 +1,7 @@
 using System.Net;
 
+using MovieSeeker.Application.Services;
+
 using Newtonsoft.Json;
 
 namespace MovieSeeker.API.Middleware
@@ -21,28 +23,15 @@ namespace MovieSeeker.API.Middleware
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro: {ex}");
+                Console.WriteLine("ERRO: " + ex.Message);
+
+                var response = new ResponseService<Object>();
+                response.AddError(ex.Message);
 
                 context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
                 
-                switch (ex)
-                {
-                    case InvalidOperationException invalidOperationException:
-                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        break;
-
-                    case UnauthorizedAccessException unauthorizedAccessException:
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        break;
-
-                    default:
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        break;
-                }
-
-                var jsonResponse = JsonConvert.SerializeObject(new { error = ex.Message });
-                
-                await context.Response.WriteAsync(jsonResponse);
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
     }

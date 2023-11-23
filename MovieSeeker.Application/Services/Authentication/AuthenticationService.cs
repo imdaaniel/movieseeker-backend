@@ -1,3 +1,5 @@
+using System.Net;
+
 using MovieSeeker.Application.Dtos.Authentication;
 using MovieSeeker.Application.Repositories;
 using MovieSeeker.Domain.Entities;
@@ -62,7 +64,17 @@ namespace MovieSeeker.Application.Services.Authentication
                 return response;
             }
 
-            response.Data = _tokenService.GenerateToken(user);
+            try
+            {
+                response.Data = new {
+                    token = _tokenService.GenerateToken(user)
+                };
+            }
+            catch (Exception)
+            {
+                response.AddError("Ocorreu um erro ao gerar o token", HttpStatusCode.InternalServerError);
+            }
+
             return response;
         }
     }
