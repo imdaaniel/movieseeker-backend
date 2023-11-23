@@ -9,7 +9,7 @@ namespace MovieSeeker.Application.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IPasswordHashService _passwordHashService;
+        private readonly IPasswordHashService _passwordHashService;        
 
         public UserRepository(ApplicationDbContext context, IPasswordHashService passwordHashService)
         {
@@ -30,15 +30,9 @@ namespace MovieSeeker.Application.Repositories
             return await _dbContext.Users.AnyAsync(u => u.Email == email);
         }
 
-        public async Task<User> AuthenticateUserAsync(string email, string password)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user == null || _passwordHashService.VerifyPassword(password, user.Password) == false) {
-                throw new UnauthorizedAccessException("Email ou senha inválidos");
-            }
-
-            return user;
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<int> UpdateUserAsync(User user)
@@ -47,7 +41,7 @@ namespace MovieSeeker.Application.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<User> GetUserByIdAsync(Guid userId)
+        public async Task<User?> GetUserByIdAsync(Guid userId)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
