@@ -5,9 +5,7 @@ namespace MovieSeeker.Application.Services
 {
     public interface IUserService
     {
-        Task<User> CreateUserAsync(UserSignUpRequestDto request);
-        Task<string> AuthenticateUserAsync(UserSignInRequestDto request);
-        Task<bool> EditUserNameAsync(Guid userId, UserEditNameRequestDto userEditNameRequestDto);
-        Task<User> GetUserByIdAsync(Guid userId);
-    }
+        // Task<ResponseService<User>> EditUserNameAsync(UserEditNameRequestDto userEditNameRequestDto);
+        Task<ResponseService<User>> GetUserByIdAsync(Guid userId);
+    }    
 }

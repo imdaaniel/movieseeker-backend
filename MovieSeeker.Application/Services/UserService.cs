@@ -1,6 +1,5 @@
-using Microsoft.EntityFrameworkCore;
+using System.Net;
 
-using MovieSeeker.Application.Dtos;
 using MovieSeeker.Application.Repositories;
 using MovieSeeker.Domain.Entities;
 
@@ -9,65 +8,52 @@ namespace MovieSeeker.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly ITokenService _tokenService;
-        private readonly IPasswordHashService _passwordHashService;
 
-        public UserService(IUserRepository userRepository, ITokenService tokenService, IPasswordHashService passwordHashService)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _tokenService = tokenService;
-            _passwordHashService = passwordHashService;
         }
 
-        public async Task<User> CreateUserAsync(UserSignUpRequestDto signUpRequestDto)
+        // public async Task<ResponseService<User>> EditUserNameAsync(Guid userId, UserEditNameRequestDto userEditNameRequestDto)
+        // {
+        //     var response = new ResponseService<User>();
+
+        //     User? user = await _userRepository.GetUserByIdAsync(userId);
+
+        //     if (user == null)
+        //     {
+        //         response.AddError("Usuário não encontrado");
+        //         return default;
+        //     }
+
+        //     user.FirstName = userEditNameRequestDto.FirstName;
+        //     user.LastName = userEditNameRequestDto.LastName;
+
+        //     int affectedRows = await _userRepository.UpdateUserAsync(user);
+
+        //     if (affectedRows < 1)
+        //     {
+        //         response.AddError("Ocorreu um erro ao editar o nome do usuário", HttpStatusCode.InternalServerError);
+        //         return default;
+        //     }
+
+        //     response.Data = user;
+        //     return response;
+        // }
+
+        public async Task<ResponseService<User>> GetUserByIdAsync(Guid userId)
         {
-            if (await _userRepository.EmailExistsAsync(signUpRequestDto.Email)) {
-                throw new InvalidOperationException("Email já cadastrado");
-            }
+            var response = new ResponseService<User>();
 
-            string hashedPassword = _passwordHashService.HashPassword(signUpRequestDto.Password);
-
-            User user = new()
-            {
-                FirstName = signUpRequestDto.FirstName,
-                LastName = signUpRequestDto.LastName,
-                Email = signUpRequestDto.Email,
-                Password = hashedPassword,
-            };
-
-            return await _userRepository.CreateUserAsync(user);
-        }
-
-        public async Task<string> AuthenticateUserAsync(UserSignInRequestDto signInRequestDto)
-        {
-            var user = await _userRepository.AuthenticateUserAsync(signInRequestDto.Email, signInRequestDto.Password);
-
-            return _tokenService.GenerateToken(user);
-        }
-
-        public async Task<bool> EditUserNameAsync(Guid userId, UserEditNameRequestDto userEditNameRequestDto)
-        {
-            User? user = await GetUserByIdAsync(userId);
+            User? user = await _userRepository.GetUserByIdAsync(userId);
 
             if (user == null) {
-                throw new InvalidOperationException("Usuario não encontrado");
+                response.AddError("Usuário não encontrado");
+                return response;
             }
 
-            user.FirstName = userEditNameRequestDto.FirstName;
-            user.LastName = userEditNameRequestDto.LastName;
-
-            int affectedRows = await _userRepository.UpdateUserAsync(user);
-
-            if (affectedRows < 1) {
-                throw new DbUpdateException("Não foi possível editar o nome do usuário");
-            }
-
-            return true;
-        }
-
-        public async Task<User> GetUserByIdAsync(Guid userId)
-        {
-            return await _userRepository.GetUserByIdAsync(userId);
+            response.Data = user;
+            return response;
         }
     }
 }
