@@ -6,17 +6,22 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
+using MovieSeeker.Application.Settings;
 
 namespace MovieSeeker.Application.Services
 {
     public class JwtService : IJwtService
     {
+        // private readonly AppSettings _appSettings;
         private readonly IConfiguration _configuration;
 
         public JwtService(IConfiguration configuration)
         {
             _configuration = configuration;
+            // _appSettings = configuration.GetSection("MySettings").Get<AppSettings>();
         }
 
         public void AddJwtAuthentication(IServiceCollection services)
@@ -43,7 +48,7 @@ namespace MovieSeeker.Application.Services
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("MySettings:Jwt:Secret").Value))
             };
             options.Events = new JwtBearerEvents
             {

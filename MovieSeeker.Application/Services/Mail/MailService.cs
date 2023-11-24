@@ -1,17 +1,19 @@
 using System.Net;
 using System.Net.Mail;
 
-using MovieSeeker.Application.Configuration;
+using Microsoft.Extensions.Options;
+
+using MovieSeeker.Application.Settings;
 
 namespace MovieSeeker.Application.Services.Mail
 {
-    public class MailService : IMailService
+    public class MailService : IMailService 
     {
-        private readonly MailSettings _mailSettings;
+        private readonly AppSettings _appSettings;
 
-        public MailService(MailSettings mailSettings)
+        public MailService(IOptions<AppSettings> appSettings)
         {
-            _mailSettings = mailSettings;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<bool> SendMail(string receiver, string subject, string body)
@@ -23,14 +25,14 @@ namespace MovieSeeker.Application.Services.Mail
 
             try
             {
-                var client = new SmtpClient(_mailSettings.Smtp.Server, _mailSettings.Smtp.Port)
+                var client = new SmtpClient(_appSettings.Mail.Smtp.Server, _appSettings.Mail.Smtp.Port)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(_mailSettings.Smtp.Username, _mailSettings.Smtp.Password),
+                    Credentials = new NetworkCredential(_appSettings.Mail.Smtp.Username, _appSettings.Mail.Smtp.Password),
                     EnableSsl = true
                 };
 
-                var message = new MailMessage(_mailSettings.From, receiver, subject, body);
+                var message = new MailMessage(_appSettings.Mail.Sender.Email, receiver, subject, body);
                 await client.SendMailAsync(message);
 
                 return true;

@@ -3,13 +3,18 @@ using Microsoft.OpenApi.Models;
 
 using MovieSeeker.API.Filters;
 using MovieSeeker.API.Middleware;
-using MovieSeeker.Application.Configuration;
 using MovieSeeker.Application.Repositories;
 using MovieSeeker.Application.Services;
 using MovieSeeker.Application.Services.Authentication;
+using MovieSeeker.Application.Services.Mail;
+using MovieSeeker.Application.Settings;
 using MovieSeeker.Infra.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<AppSettings>(options => {
+    builder.Configuration.GetSection("MySettings").Bind(options);
+});
 
 // Autenticação
 var jwtService = new JwtService(builder.Configuration);
@@ -17,20 +22,21 @@ jwtService.AddJwtAuthentication(builder.Services);
 
 // Conexão com banco de dados
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseNpgsql(builder.Configuration.GetSection("MySettings:ConnectionStrings:DefaultConnection").Value)
 );
-
-// Email
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mail"));
 
 // Repositórios
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserActivationRepository, UserActivationRepository>();
 
 // Serviços
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IMailService, MailService>();
+
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IResponseService, ResponseService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserActivationService, UserActivationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers(options => {

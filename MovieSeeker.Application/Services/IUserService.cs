@@ -6,5 +6,6 @@ namespace MovieSeeker.Application.Services
     {
         // Task<ResponseService<User>> EditUserNameAsync(UserEditNameRequestDto userEditNameRequestDto);
         Task<ResponseService<User>> GetUserByIdAsync(Guid userId);
+        string GetUserFullName(User user);
     }    
 }

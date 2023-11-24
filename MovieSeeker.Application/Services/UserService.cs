@@ -55,5 +55,10 @@ namespace MovieSeeker.Application.Services
             response.Data = user;
             return response;
         }
+
+        public string GetUserFullName(User user)
+        {
+            return $"{user.FirstName} {user.LastName}";
+        }
     }
 }

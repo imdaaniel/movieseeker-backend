@@ -25,6 +25,9 @@ namespace MovieSeeker.Infra.Data.Mappings
             builder.Property(e => e.Expired)
                 .IsRequired()
                 .HasDefaultValue(false);
+
+            builder.Navigation(e => e.User)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
         }
     }
 }

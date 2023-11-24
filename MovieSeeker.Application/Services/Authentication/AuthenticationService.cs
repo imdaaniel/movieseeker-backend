@@ -11,15 +11,18 @@ namespace MovieSeeker.Application.Services.Authentication
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IPasswordHashService _passwordHashService;
+        private readonly IUserActivationService _userActivationService;
 
         public AuthenticationService(
             IUserRepository userRepository,
             ITokenService tokenService,
-            IPasswordHashService passwordHashService)
+            IPasswordHashService passwordHashService,
+            IUserActivationService userActivationService)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
             _passwordHashService = passwordHashService;
+            _userActivationService = userActivationService;
         }
 
         public async Task<ResponseService<User>> CreateUserAsync(SignUpRequestDto signUpRequestDto)
@@ -42,8 +45,19 @@ namespace MovieSeeker.Application.Services.Authentication
                 Password = hashedPassword,
             };
 
-            response.Data = await _userRepository.CreateUserAsync(user);
+            User createdUser = await _userRepository.CreateUserAsync(user);
 
+            UserActivation userActivation = await _userActivationService.CreateAsync(createdUser);
+
+            bool activationEmailSent = await _userActivationService.SendActivationEmailAsync(userActivation);
+
+            if (activationEmailSent == false)
+            {
+                response.AddError("O usuário foi cadastrado, mas ocorreu um erro ao enviar o email de ativação de conta");
+                return response;
+            }
+
+            response.Data = createdUser;
             return response;
         }
 
@@ -66,7 +80,8 @@ namespace MovieSeeker.Application.Services.Authentication
 
             try
             {
-                response.Data = new {
+                response.Data = new
+                {
                     token = _tokenService.GenerateToken(user)
                 };
             }
