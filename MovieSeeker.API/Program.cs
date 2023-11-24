@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 
 using MovieSeeker.API.Filters;
 using MovieSeeker.API.Middleware;
+using MovieSeeker.Application.Configuration;
 using MovieSeeker.Application.Repositories;
 using MovieSeeker.Application.Services;
 using MovieSeeker.Application.Services.Authentication;
@@ -18,6 +19,9 @@ jwtService.AddJwtAuthentication(builder.Services);
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+// Email
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mail"));
 
 // Repositórios
 builder.Services.AddScoped<IUserRepository, UserRepository>();
