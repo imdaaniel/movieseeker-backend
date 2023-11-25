@@ -24,7 +24,40 @@ namespace MovieSeeker.Application.Repositories
 
         public async Task<UserActivation?> FindById(Guid activationId)
         {
-            return await _dbContext.UserActivations.FirstOrDefaultAsync(u => u.Id == activationId);
+            UserActivation? userActivation = await _dbContext.UserActivations.FirstOrDefaultAsync(u => u.Id == activationId);
+
+            if (userActivation != null) {
+                userActivation.User = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userActivation.UserId);
+                return userActivation;
+            }
+
+            return null;
+        }
+
+        public async Task<UserActivation?> FindValidUserActivation(Guid userId)
+        {
+            return await _dbContext.UserActivations.FirstOrDefaultAsync(u => 
+                !u.Expired
+                && !u.Activated
+                && (DateTime.UtcNow - u.SendingMoment).TotalHours <= 3
+            );
+        }
+
+        public async Task<bool> InvalidateAllUserActivations(Guid userId)
+        {
+            try
+            {
+                List<UserActivation> previousUserActivations = await _dbContext.UserActivations.Where(u => u.UserId == userId).ToListAsync();
+
+                previousUserActivations.ForEach(u => u.Expired = true);
+
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<UserActivation> UpdateAsync(UserActivation userActivation)
